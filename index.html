@@ -133,6 +133,23 @@ nav{display:flex;flex:1;overflow-x:auto;}
 .fin-month-totals{font-size:12px;color:#555;font-weight:400;}
 .empty-msg{padding:24px;text-align:center;color:#bbb;font-size:13px;}
 @media(max-width:400px){.nav-label{display:none;}}
+@media(max-width:700px){
+  #desktop-nav{ display:none !important; }
+  #ham-btn{ display:flex !important; align-items:center; justify-content:center; }
+}
+@media(min-width:701px){
+  #mobile-menu{ display:none !important; }
+  #ham-btn{ display:none !important; }
+}
+.mob-nav-btn{
+  display:flex;align-items:center;gap:10px;width:100%;
+  padding:13px 20px;border:none;background:none;cursor:pointer;
+  font-size:15px;font-weight:500;color:#333;text-align:left;
+  border-bottom:1px solid #f5f5f5;
+}
+.mob-nav-btn:last-child{border-bottom:none;}
+.mob-nav-btn.active{color:#1d4ed8;font-weight:700;background:#f0f7ff;}
+.mob-nav-btn:hover{background:#f8f8f8;}
 </style>
 </head>
 <body>
@@ -142,7 +159,8 @@ nav{display:flex;flex:1;overflow-x:auto;}
       <div class="logo">IJ</div>
       <div><div class="logo-name">Inma de Juan</div><div class="logo-sub">Gestión inmobiliaria</div></div>
     </div>
-    <nav>
+    <!-- Desktop nav -->
+    <nav id="desktop-nav">
       <button class="nav-btn active" onclick="showTab('dashboard',this)">📊 <span class="nav-label">Dashboard</span></button>
       <button class="nav-btn" onclick="showTab('kanban',this)">🏠 <span class="nav-label">Viviendas</span></button>
       <button class="nav-btn" onclick="showTab('finanzas',this)">💶 <span class="nav-label">Finanzas</span></button>
@@ -150,10 +168,22 @@ nav{display:flex;flex:1;overflow-x:auto;}
       <button class="nav-btn" onclick="showTab('incidencias',this)">⚠️ <span class="nav-label">Incidencias</span></button>
       <button class="nav-btn" onclick="showTab('planner',this)">🗓 <span class="nav-label">Planner</span></button>
     </nav>
-    <div style="flex-shrink:0;margin-left:8px">
+    <div style="display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0">
       <span id="sync-status" title="Estado sincronización Google Sheets"
         style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:999px;background:#f5f5f5;color:#888;white-space:nowrap;cursor:default">💾 Local</span>
+      <!-- Hamburger button (mobile only) -->
+      <button id="ham-btn" onclick="toggleMenu()" aria-label="Menú"
+        style="display:none;background:none;border:1px solid #e0e0e0;border-radius:8px;padding:6px 10px;cursor:pointer;font-size:18px;line-height:1;color:#333">☰</button>
     </div>
+  </div>
+  <!-- Mobile dropdown menu -->
+  <div id="mobile-menu" style="display:none;background:#fff;border-top:1px solid #f0f0f0;padding:6px 0">
+    <button class="mob-nav-btn active" onclick="showTabMob('dashboard')">📊 Dashboard</button>
+    <button class="mob-nav-btn" onclick="showTabMob('kanban')">🏠 Viviendas</button>
+    <button class="mob-nav-btn" onclick="showTabMob('finanzas')">💶 Finanzas</button>
+    <button class="mob-nav-btn" onclick="showTabMob('calendario')">📅 Calendario</button>
+    <button class="mob-nav-btn" onclick="showTabMob('incidencias')">⚠️ Incidencias</button>
+    <button class="mob-nav-btn" onclick="showTabMob('planner')">🗓 Planner</button>
   </div>
 </div>
 <div class="content">
@@ -1340,6 +1370,48 @@ function scheduleNotif(ev){
     if(delay>0&&delay<86400000) setTimeout(()=>new Notification('Recordatorio: '+ev.titulo,{body:'En 30 min · '+(ev.vivienda||'')+' · '+ev.hora}),delay);
   }catch(e){}
 }
+
+// ── Mobile menu ───────────────────────────────────────────────────────────────
+function toggleMenu(){
+  const menu = document.getElementById('mobile-menu');
+  const btn = document.getElementById('ham-btn');
+  const open = menu.style.display === 'none' || menu.style.display === '';
+  menu.style.display = open ? 'block' : 'none';
+  btn.textContent = open ? '✕' : '☰';
+}
+
+function showTabMob(id){
+  // Close menu
+  document.getElementById('mobile-menu').style.display = 'none';
+  document.getElementById('ham-btn').textContent = '☰';
+  // Update mobile nav highlight
+  document.querySelectorAll('.mob-nav-btn').forEach(b => b.classList.remove('active'));
+  const labels = {dashboard:'Dashboard',kanban:'Viviendas',finanzas:'Finanzas',
+    calendario:'Calendario',incidencias:'Incidencias',planner:'Planner'};
+  document.querySelectorAll('.mob-nav-btn').forEach(b => {
+    if(b.textContent.trim().includes(labels[id])) b.classList.add('active');
+  });
+  // Also update desktop nav
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  // Show section
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  const renders={dashboard:renderDash,kanban:renderKanban,finanzas:renderFinanzas,
+    calendario:renderCal,incidencias:renderInc,planner:renderPlanner};
+  if(renders[id]) renders[id]();
+  // Scroll to top
+  window.scrollTo(0,0);
+}
+
+// Close mobile menu when clicking outside
+document.addEventListener('click', function(e){
+  const menu = document.getElementById('mobile-menu');
+  const btn = document.getElementById('ham-btn');
+  if(menu.style.display==='block' && !menu.contains(e.target) && !btn.contains(e.target)){
+    menu.style.display='none';
+    btn.textContent='☰';
+  }
+});
 
 // ── Cerrar modal al clic fondo ────────────────────────────────────────────────
 document.querySelectorAll('.modal-bg').forEach(m=>{
