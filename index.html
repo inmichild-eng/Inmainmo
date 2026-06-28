@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inma de Juan · Gestión Inmobiliaria</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:system-ui,-apple-system,sans-serif;background:#f6f7f9;min-height:100vh;}
+input,select,textarea,button{font-family:inherit;}
+input[type=text],input[type=number],input[type=date],select,textarea{
+  width:100%;padding:8px 11px;border:1px solid #e0e0e0;border-radius:8px;
+  font-size:13px;color:#111;background:#fafafa;outline:none;box-sizing:border-box;}
+textarea{resize:vertical;min-height:68px;}
+.header{background:#fff;border-bottom:1px solid #ebebeb;position:sticky;top:0;z-index:100;}
+.header-inner{max-width:1240px;margin:0 auto;padding:0 14px;display:flex;align-items:center;}
+.logo{width:32px;height:32px;border-radius:8px;background:#1d4ed8;display:flex;align-items:center;
+  justify-content:center;color:#fff;font-size:12px;font-weight:800;flex-shrink:0;}
+.logo-wrap{display:flex;align-items:center;gap:8px;padding:10px 14px 10px 0;
+  border-right:1px solid #f0f0f0;margin-right:10px;flex-shrink:0;}
+.logo-name{font-size:13px;font-weight:700;color:#111;line-height:1.2;}
+.logo-sub{font-size:10px;color:#aaa;}
+nav{display:flex;flex:1;overflow-x:auto;}
+.nav-btn{padding:11px 10px;border:none;background:none;cursor:pointer;font-size:12px;font-weight:500;
+  color:#666;border-bottom:2px solid transparent;display:flex;align-items:center;gap:4px;white-space:nowrap;}
+.nav-btn.active{font-weight:700;color:#1d4ed8;border-bottom:2px solid #2563eb;}
+.content{max-width:1240px;margin:0 auto;padding:18px 14px;}
+.section{display:none;}.section.active{display:block;}
+.card{background:#fff;border:1px solid #f0f0f0;border-radius:12px;padding:16px;}
+.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px;}
+.stat-card{background:#fff;border:1px solid #f0f0f0;border-radius:12px;padding:14px 16px;}
+.stat-label{font-size:12px;color:#888;margin-bottom:5px;}
+.stat-val{font-size:22px;font-weight:700;}
+.stat-sub{font-size:11px;color:#aaa;margin-top:3px;}
+.row2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;}
+.sec-title{font-size:13px;font-weight:700;color:#333;margin-bottom:12px;}
+.list-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f5f5f5;}
+.list-item:last-child{border-bottom:none;}
+.badge{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:999px;white-space:nowrap;}
+.badge-d{background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;}
+.badge-i{background:#f5f3ff;color:#7c3aed;border:1px solid #ddd6fe;}
+.gfilter{display:flex;gap:4px;flex-wrap:wrap;}
+.gfbtn{padding:4px 10px;border-radius:999px;border:1px solid #e5e5e5;background:transparent;
+  color:#999;font-size:11px;font-weight:700;cursor:pointer;}
+.gfbtn.act-t{border-color:#555;background:#f0f0f0;color:#555;}
+.gfbtn.act-d{border-color:#15803d;background:#f0fdf4;color:#15803d;}
+.gfbtn.act-i{border-color:#7c3aed;background:#f5f3ff;color:#7c3aed;}
+.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
+.btn{padding:7px 14px;border-radius:8px;border:1px solid #2563eb;background:#eff6ff;
+  color:#1d4ed8;font-size:13px;font-weight:700;cursor:pointer;}
+.btn-sm{padding:5px 10px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid #e0e0e0;background:#fafafa;color:#555;}
+.btn-gray{border-color:#e0e0e0;background:#fafafa;color:#666;}
+.btn-warn{border-color:#fde68a;background:#fef9c3;color:#a16207;}
+.btn-danger{border-color:#fca5a5;background:#fef2f2;color:#dc2626;}
+.btn-save{border:none;background:#2563eb;color:#fff;}
+.kanban-board{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;}
+.kanban-col{background:#f8f8f8;border-radius:12px;padding:12px;min-width:180px;flex:1;border-top:3px solid #ccc;}
+.col-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.col-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+.col-count{font-size:11px;background:#fff;border:1px solid #ebebeb;border-radius:999px;padding:1px 7px;color:#888;}
+.prop-card{background:#fff;border:1px solid #efefef;border-radius:10px;padding:12px;margin-bottom:8px;cursor:pointer;}
+.prop-card:hover{border-color:#ccc;}
+.prop-tipo{font-size:10px;font-weight:700;text-transform:uppercase;margin-bottom:4px;}
+.prop-dir{font-size:13px;font-weight:600;color:#111;line-height:1.3;margin-bottom:5px;}
+.prop-tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:5px;}
+.ptag{font-size:10px;padding:1px 6px;border-radius:999px;background:#f5f5f5;color:#666;border:1px solid #eee;}
+.ptag-i{background:#f5f3ff;color:#7c3aed;border-color:#ddd6fe;}
+.ptag-t{background:#fef3c7;color:#a16207;border-color:#fde68a;}
+.prop-price{font-size:12px;font-weight:600;color:#222;}
+.tipo-a{color:#2563eb;}.tipo-v{color:#16a34a;}.tipo-r{color:#d97706;}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:2000;
+  align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;}
+.modal-bg.open{display:flex;}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:500px;margin-top:16px;
+  box-shadow:0 20px 60px rgba(0,0,0,.2);}
+.modal.wide{max-width:660px;}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;
+  border-bottom:1px solid #f0f0f0;background:#fff;border-radius:16px 16px 0 0;}
+.modal-title{font-size:15px;font-weight:700;color:#111;}
+.modal-close{background:none;border:none;cursor:pointer;font-size:22px;color:#aaa;line-height:1;padding:0 4px;}
+.modal-body{padding:20px;max-height:82vh;overflow-y:auto;}
+.field{margin-bottom:12px;}
+.field label{display:block;font-size:11px;font-weight:700;color:#888;margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px;}
+.type-sel{display:grid;gap:8px;margin-bottom:12px;}
+.type-opt{border:2px solid #e5e5e5;border-radius:8px;padding:7px;text-align:center;cursor:pointer;
+  font-size:12px;font-weight:700;color:#bbb;transition:all .15s;user-select:none;}
+.modal-footer{display:flex;gap:7px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap;}
+.finance-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:18px;}
+.fin-card{border-radius:12px;padding:13px 15px;}
+.tx-table{background:#fff;border:1px solid #f0f0f0;border-radius:12px;overflow-x:auto;margin-bottom:24px;}
+.tx-head{display:grid;padding:9px 14px;background:#f8f8f8;font-size:11px;font-weight:700;color:#888;
+  text-transform:uppercase;letter-spacing:.4px;}
+.tx-row{display:grid;padding:10px 14px;border-top:1px solid #f5f5f5;align-items:center;cursor:pointer;}
+.tx-row:hover{background:#fafafa;}
+.cat-badge{font-size:11px;font-weight:700;padding:2px 7px;border-radius:999px;}
+.estado-badge{font-size:11px;font-weight:700;padding:2px 7px;border-radius:999px;cursor:pointer;border:none;background:none;}
+.cal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px;}
+.month-block{background:#fff;border:1px solid #f0f0f0;border-radius:10px;padding:11px;}
+.month-name{font-size:12px;font-weight:700;color:#333;margin-bottom:6px;}
+.day-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;}
+.day-label{font-size:8px;color:#ccc;text-align:center;}
+.day-cell{font-size:9px;height:18px;border-radius:3px;display:flex;align-items:center;justify-content:center;color:#777;}
+.day-cell.has-ev{background:#dbeafe;color:#1d4ed8;font-weight:700;cursor:pointer;}
+.day-cell.has-pago{background:#dcfce7;color:#15803d;font-weight:700;cursor:pointer;}
+.day-cell.has-inc{background:#fee2e2;color:#b91c1c;font-weight:700;cursor:pointer;}
+.inc-card{background:#fff;border:1px solid #f0f0f0;border-radius:10px;padding:13px;
+  display:flex;gap:11px;cursor:pointer;margin-bottom:9px;}
+.inc-card:hover{border-color:#ccc;}
+.inc-bar{width:4px;border-radius:2px;flex-shrink:0;}
+.inc-body{flex:1;min-width:0;}
+.planner-wrap{overflow-x:auto;}
+.planner-grid{display:grid;grid-template-columns:52px repeat(7,1fr);min-width:520px;border:1px solid #f0f0f0;border-radius:12px;overflow:hidden;}
+.planner-head{padding:7px 3px;text-align:center;background:#f8f8f8;border-left:1px solid #f0f0f0;}
+.planner-time{padding:5px 5px 5px 3px;text-align:right;font-size:9px;color:#ccc;font-weight:700;background:#f8f8f8;border-top:1px solid #f9f9f9;}
+.planner-cell{border-left:1px solid #f5f5f5;border-top:1px solid #f9f9f9;min-height:34px;padding:2px;cursor:pointer;}
+.planner-cell:hover{background:#f0f8ff;}
+.planner-ev{border-radius:3px;padding:2px 4px;font-size:9px;line-height:1.3;margin-bottom:2px;font-weight:700;cursor:pointer;display:block;}
+.legend{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap;}
+.legend-item{padding:2px 9px;border-radius:4px;font-weight:700;font-size:11px;}
+.arch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;}
+.arch-card{background:#fff;border:1px solid #f0f0f0;border-radius:10px;padding:14px;opacity:.75;}
+.doc-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;
+  border:2px solid #f0f0f0;background:#fafafa;cursor:pointer;margin-bottom:6px;}
+.doc-item.sel{border-color:#2563eb;background:#eff6ff;}
+.doc-thumb{width:36px;height:36px;border-radius:5px;background:#e5e7eb;display:flex;
+  align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.notif-bar{display:flex;align-items:center;gap:9px;margin-bottom:13px;padding:9px 11px;
+  background:#fef9c3;border:1px solid #fde68a;border-radius:8px;}
+.alerta-warn{font-size:12px;color:#dc2626;margin-bottom:11px;padding:7px 11px;background:#fef2f2;border-radius:7px;}
+.fin-month-header{font-size:13px;font-weight:700;color:#1d4ed8;background:#eff6ff;
+  padding:8px 14px;border-top:1px solid #bfdbfe;display:flex;justify-content:space-between;align-items:center;}
+.fin-month-header:first-child{border-top:none;}
+.fin-month-totals{font-size:12px;color:#555;font-weight:400;}
+.empty-msg{padding:24px;text-align:center;color:#bbb;font-size:13px;}
+@media(max-width:400px){.nav-label{display:none;}}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-inner">
+    <div class="logo-wrap">
+      <div class="logo">IJ</div>
+      <div><div class="logo-name">Inma de Juan</div><div class="logo-sub">Gestión inmobiliaria</div></div>
+    </div>
+    <nav>
+      <button class="nav-btn active" onclick="showTab('dashboard',this)">📊 <span class="nav-label">Dashboard</span></button>
+      <button class="nav-btn" onclick="showTab('kanban',this)">🏠 <span class="nav-label">Viviendas</span></button>
+      <button class="nav-btn" onclick="showTab('finanzas',this)">💶 <span class="nav-label">Finanzas</span></button>
+      <button class="nav-btn" onclick="showTab('calendario',this)">📅 <span class="nav-label">Calendario</span></button>
+      <button class="nav-btn" onclick="showTab('incidencias',this)">⚠️ <span class="nav-label">Incidencias</span></button>
+      <button class="nav-btn" onclick="showTab('planner',this)">🗓 <span class="nav-label">Planner</span></button>
+    </nav>
+    <div style="flex-shrink:0;margin-left:8px">
+      <span id="sync-status" title="Estado sincronización Google Sheets"
+        style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:999px;background:#f5f5f5;color:#888;white-space:nowrap;cursor:default">💾 Local</span>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="section active" id="sec-dashboard">
+    <div class="top-bar">
+      <span style="font-size:15px;font-weight:700;color:#111">Panel principal</span>
+      <div class="gfilter" id="dash-gf">
+        <button class="gfbtn act-t" onclick="setGF('dash','todas',this)">Todas</button>
+        <button class="gfbtn" onclick="setGF('dash','directa',this)">Directa</button>
+        <button class="gfbtn" onclick="setGF('dash','inmobiliaria',this)">Inmobiliaria</button>
+      </div>
+    </div>
+    <div class="grid4" id="dash-stats"></div>
+    <div class="row2">
+      <div class="card"><div class="sec-title">Próximos pagos pendientes</div><div id="dash-pagos"></div></div>
+      <div class="card"><div class="sec-title">Próximos eventos</div><div id="dash-eventos"></div></div>
+    </div>
+  </div>
+
+  <div class="section" id="sec-kanban">
+    <div class="top-bar">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <span style="font-size:15px;font-weight:700;color:#111">Viviendas</span>
+        <div class="gfilter" id="kan-gf">
+          <button class="gfbtn act-t" onclick="setGF('kan','todas',this)">Todas</button>
+          <button class="gfbtn" onclick="setGF('kan','directa',this)">Directa</button>
+          <button class="gfbtn" onclick="setGF('kan','inmobiliaria',this)">Inmobiliaria</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn-sm btn-warn" onclick="toggleArchivo()" id="btn-archivo">🗄 Archivo</button>
+        <button class="btn-sm" onclick="openEstados()">⚙️ Estados</button>
+        <button class="btn" onclick="openViv(null)">+ Nueva</button>
+      </div>
+    </div>
+    <div id="kanban-activas"><div class="kanban-board" id="kanban-board"></div></div>
+    <div id="kanban-archivo" style="display:none">
+      <div style="font-size:13px;font-weight:700;color:#a16207;margin-bottom:12px">🗄 Archivo histórico</div>
+      <div class="arch-grid" id="arch-grid"></div>
+    </div>
+  </div>
+
+  <div class="section" id="sec-finanzas">
+    <div class="top-bar">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <span style="font-size:15px;font-weight:700;color:#111">Finanzas</span>
+        <div class="gfilter" id="fin-gf">
+          <button class="gfbtn act-t" onclick="setGF('fin','todas',this)">Todas</button>
+          <button class="gfbtn" onclick="setGF('fin','directa',this)">Directa</button>
+          <button class="gfbtn" onclick="setGF('fin','inmobiliaria',this)">Inmobiliaria</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <select id="fin-vista" onchange="renderFinanzas()" style="width:auto">
+          <option value="mensual">Por mes</option>
+          <option value="anual">Resumen anual</option>
+        </select>
+        <select id="fin-mes" onchange="renderFinanzas()" style="width:auto">
+          <option value="2025-01">Enero 2025</option><option value="2025-02">Febrero 2025</option>
+          <option value="2025-03">Marzo 2025</option><option value="2025-04">Abril 2025</option>
+          <option value="2025-05">Mayo 2025</option><option value="2025-06">Junio 2025</option>
+          <option value="2025-07" selected>Julio 2025</option><option value="2025-08">Agosto 2025</option>
+          <option value="2025-09">Septiembre 2025</option><option value="2025-10">Octubre 2025</option>
+          <option value="2025-11">Noviembre 2025</option><option value="2025-12">Diciembre 2025</option>
+        </select>
+        <button class="btn" onclick="openPago(null)">+ Movimiento</button>
+      </div>
+    </div>
+    <div class="finance-grid" id="fin-summary"></div>
+    <div id="fin-content"></div>
+  </div>
+
+  <div class="section" id="sec-calendario">
+    <div class="top-bar">
+      <span style="font-size:15px;font-weight:700;color:#111">Calendario 2025</span>
+      <div class="gfilter" id="cal-gf">
+        <button class="gfbtn act-t" onclick="setGF('cal','todas',this)">Todas</button>
+        <button class="gfbtn" onclick="setGF('cal','directa',this)">Directa</button>
+        <button class="gfbtn" onclick="setGF('cal','inmobiliaria',this)">Inmobiliaria</button>
+      </div>
+    </div>
+    <div class="cal-grid" id="cal-grid"></div>
+    <div class="legend" style="margin-top:10px">
+      <span class="legend-item" style="background:#dbeafe;color:#1d4ed8">Gestión/visita</span>
+      <span class="legend-item" style="background:#dcfce7;color:#15803d">Pago/cobro</span>
+      <span class="legend-item" style="background:#fee2e2;color:#b91c1c">Incidencia</span>
+    </div>
+  </div>
+
+  <div class="section" id="sec-incidencias">
+    <div class="top-bar">
+      <div style="display:flex;gap:4px;flex-wrap:wrap" id="inc-filtros">
+        <button class="gfbtn act-t" onclick="setIncFiltro('todas',this)">Todas</button>
+        <button class="gfbtn" onclick="setIncFiltro('abierta',this)">Abierta</button>
+        <button class="gfbtn" onclick="setIncFiltro('en_curso',this)">En curso</button>
+        <button class="gfbtn" onclick="setIncFiltro('pendiente',this)">Pendiente</button>
+        <button class="gfbtn" onclick="setIncFiltro('resuelta',this)">Resuelta</button>
+      </div>
+      <button class="btn" onclick="openInc(null)">+ Nueva</button>
+    </div>
+    <div class="gfilter" id="inc-gf" style="margin-bottom:12px">
+      <button class="gfbtn act-t" onclick="setGF('inc','todas',this)">Todas</button>
+      <button class="gfbtn" onclick="setGF('inc','directa',this)">Directa</button>
+      <button class="gfbtn" onclick="setGF('inc','inmobiliaria',this)">Inmobiliaria</button>
+    </div>
+    <div id="inc-list"></div>
+  </div>
+
+  <div class="section" id="sec-planner">
+    <div class="top-bar">
+      <div style="display:flex;align-items:center;gap:8px">
+        <button class="btn-sm" onclick="cambiarSemana(-1)">←</button>
+        <span id="planner-label" style="font-size:13px;font-weight:700;color:#333"></span>
+        <button class="btn-sm" onclick="cambiarSemana(1)">→</button>
+      </div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap">
+        <button class="btn-sm btn-warn" id="notif-btn" onclick="activarAlertas()" style="display:none">🔔 Activar alertas</button>
+        <span id="notif-ok" style="display:none;font-size:12px;color:#16a34a;font-weight:700;align-self:center">✓ Alertas activas</span>
+        <button class="btn" onclick="openEv(null,null,null)">+ Evento</button>
+      </div>
+    </div>
+    <div class="planner-wrap"><div class="planner-grid" id="planner-grid"></div></div>
+    <div class="legend">
+      <span class="legend-item" style="background:#dbeafe;color:#1d4ed8;border-left:3px solid #3b82f6">Visita</span>
+      <span class="legend-item" style="background:#dcfce7;color:#15803d;border-left:3px solid #22c55e">Firma</span>
+      <span class="legend-item" style="background:#fef9c3;color:#a16207;border-left:3px solid #eab308">Admin</span>
+      <span class="legend-item" style="background:#fee2e2;color:#b91c1c;border-left:3px solid #ef4444">Incidencia</span>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL VIVIENDA -->
+<div class="modal-bg" id="modal-viv">
+  <div class="modal wide">
+    <div class="modal-head">
+      <span class="modal-title" id="viv-title">Nueva vivienda</span>
+      <button class="modal-close" onclick="closeModal('modal-viv')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>Tipo de operación</label>
+        <div class="type-sel" style="grid-template-columns:repeat(3,1fr)" id="viv-tipo-sel">
+          <div class="type-opt" data-t="alquiler" onclick="selTipo(this)">Alquiler</div>
+          <div class="type-opt" data-t="venta" onclick="selTipo(this)">Venta</div>
+          <div class="type-opt" data-t="reforma" onclick="selTipo(this)">Reforma</div>
+        </div>
+      </div>
+      <div class="field"><label>Tipo de inmueble</label>
+        <select id="viv-inmueble">
+          <option value="">— Seleccionar —</option>
+          <option>Piso</option><option>Casa</option><option>Chalet</option><option>Apartamento</option>
+          <option>Estudio</option><option>Ático</option><option>Dúplex</option>
+          <option>Local comercial</option><option>Oficina</option><option>Garaje</option>
+          <option>Trastero</option><option>Terreno</option><option>Nave industrial</option>
+          <option>Finca rústica</option><option>Otro</option>
+        </select>
+      </div>
+      <div class="field"><label>Gestión</label>
+        <div class="type-sel" style="grid-template-columns:1fr 1fr" id="viv-gest-sel">
+          <div class="type-opt" data-g="directa" onclick="selGest(this)">Gestión directa</div>
+          <div class="type-opt" data-g="inmobiliaria" onclick="selGest(this)">Por inmobiliaria</div>
+        </div>
+      </div>
+      <div class="field" id="field-inmo" style="display:none">
+        <label>Nombre inmobiliaria</label>
+        <input type="text" id="viv-inmo" placeholder="RE/MAX, Idealista Pro...">
+      </div>
+      <div class="field"><label>Dirección completa *</label><input type="text" id="viv-dir" placeholder="C/ Gran Vía 10, 3ºB, Madrid"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="field"><label>Habitaciones</label>
+          <select id="viv-habs"><option value="">—</option><option>Estudio</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5+</option></select>
+        </div>
+        <div class="field"><label>Superficie m²</label><input type="text" id="viv-m2" placeholder="75"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="field"><label id="viv-precio-label">Precio</label><input type="text" id="viv-precio" placeholder="950 €/mes"></div>
+        <div class="field"><label>Propietario/a</label><input type="text" id="viv-prop" placeholder="Nombre"></div>
+      </div>
+      <div class="field"><label>Estado en el kanban</label><div class="type-sel" id="viv-estado-sel" style="grid-template-columns:repeat(2,1fr)"></div></div>
+      <div class="field"><label>Notas</label><textarea id="viv-notas" placeholder="Observaciones..."></textarea></div>
+      <div style="border-top:1px solid #f0f0f0;padding-top:12px;margin-top:4px">
+        <div style="font-size:11px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Documentos</div>
+        <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
+          <button class="btn-sm" onclick="document.getElementById('file-adj').click()">📎 Adjuntar</button>
+          <button class="btn-sm" onclick="document.getElementById('file-cam').click()">📷 Foto</button>
+          <button class="btn-sm" id="btn-email-docs" style="display:none;border-color:#bfdbfe;background:#eff6ff;color:#1d4ed8" onclick="emailDocs()">✉️ Email</button>
+          <button class="btn-sm" id="btn-share-docs" style="display:none;border-color:#bbf7d0;background:#f0fdf4;color:#15803d" onclick="shareDocs()">📤 Compartir</button>
+        </div>
+        <input type="file" id="file-adj" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="display:none" onchange="addDocs(this.files)">
+        <input type="file" id="file-cam" accept="image/*" capture="environment" style="display:none" onchange="addDocs(this.files)">
+        <div id="doc-list"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-sm btn-warn" id="btn-archivar" style="display:none" onclick="archivarViv()">🗄 Archivar</button>
+        <button class="btn-sm btn-danger" id="btn-del-viv" style="display:none" onclick="delViv()">Eliminar</button>
+        <button class="btn-sm btn-gray" onclick="closeModal('modal-viv')">Cancelar</button>
+        <button class="btn btn-save" onclick="saveViv()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PAGO -->
+<div class="modal-bg" id="modal-pago">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="modal-title" id="pago-title">Nuevo movimiento</span>
+      <button class="modal-close" onclick="closeModal('modal-pago')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="type-sel" style="grid-template-columns:1fr 1fr" id="pago-tipo-sel">
+        <div class="type-opt" data-pt="ingreso" onclick="selPagoTipo(this)">Ingreso</div>
+        <div class="type-opt" data-pt="gasto" onclick="selPagoTipo(this)">Gasto</div>
+      </div>
+      <div class="type-sel" style="grid-template-columns:1fr 1fr" id="pago-gest-sel">
+        <div class="type-opt" data-g="directa" onclick="selPagoGest(this)">Directa</div>
+        <div class="type-opt" data-g="inmobiliaria" onclick="selPagoGest(this)">Inmobiliaria</div>
+      </div>
+      <div class="field"><label>Concepto</label><input type="text" id="pago-concepto" placeholder="Alquiler, seguro..."></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="field"><label>Vivienda</label><input type="text" id="pago-viv" placeholder="C/ Gran Vía 10"></div>
+        <div class="field"><label>Categoría</label>
+          <select id="pago-cat"><option>alquiler</option><option>comision</option><option>gasto</option><option>comunidad</option><option>reparacion</option><option>asesoria</option><option>hipoteca</option><option>seguro</option></select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="field"><label>Importe (€)</label><input type="number" id="pago-importe" placeholder="950"></div>
+        <div class="field"><label>Fecha</label><input type="date" id="pago-fecha"></div>
+      </div>
+      <div class="field"><label>Estado</label>
+        <select id="pago-estado"><option value="pendiente">Pendiente</option><option value="cobrado">Cobrado / Pagado</option></select>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-sm btn-danger" id="btn-del-pago" style="display:none" onclick="delPago()">Eliminar</button>
+        <button class="btn-sm btn-gray" onclick="closeModal('modal-pago')">Cancelar</button>
+        <button class="btn btn-save" onclick="savePago()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL INCIDENCIA -->
+<div class="modal-bg" id="modal-inc">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="modal-title" id="inc-title">Nueva incidencia</span>
+      <button class="modal-close" onclick="closeModal('modal-inc')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="type-sel" style="grid-template-columns:1fr 1fr" id="inc-gest-sel">
+        <div class="type-opt" data-g="directa" onclick="selIncGest(this)">Directa</div>
+        <div class="type-opt" data-g="inmobiliaria" onclick="selIncGest(this)">Inmobiliaria</div>
+      </div>
+      <div class="field"><label>Título</label><input type="text" id="inc-titulo" placeholder="Avería caldera..."></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="field"><label>Vivienda</label><input type="text" id="inc-viv" placeholder="C/ Alcalá 88"></div>
+        <div class="field"><label>Tipo</label>
+          <select id="inc-tipo"><option>averia</option><option>nota</option><option>juridico</option><option>inquilino</option></select>
+        </div>
+      </div>
+      <div class="type-sel" style="grid-template-columns:repeat(3,1fr)" id="inc-prio-sel">
+        <div class="type-opt" data-p="alta" onclick="selIncPrio(this)">Alta</div>
+        <div class="type-opt" data-p="media" onclick="selIncPrio(this)">Media</div>
+        <div class="type-opt" data-p="baja" onclick="selIncPrio(this)">Baja</div>
+      </div>
+      <div class="field"><label>Estado</label>
+        <select id="inc-estado"><option value="abierta">Abierta</option><option value="en_curso">En curso</option><option value="pendiente">Pendiente</option><option value="resuelta">Resuelta</option></select>
+      </div>
+      <div class="field"><label>Descripción</label><textarea id="inc-desc" placeholder="Detalle..."></textarea></div>
+      <div class="field"><label>Fecha</label><input type="date" id="inc-fecha"></div>
+      <div class="modal-footer">
+        <button class="btn-sm btn-danger" id="btn-del-inc" style="display:none" onclick="delInc()">Eliminar</button>
+        <button class="btn-sm btn-gray" onclick="closeModal('modal-inc')">Cancelar</button>
+        <button class="btn btn-save" onclick="saveInc()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EVENTO -->
+<div class="modal-bg" id="modal-ev">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="modal-title" id="ev-title">Nuevo evento</span>
+      <button class="modal-close" onclick="closeModal('modal-ev')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="type-sel" style="grid-template-columns:repeat(4,1fr)" id="ev-tipo-sel">
+        <div class="type-opt" data-et="visita" onclick="selEvTipo(this)">Visita</div>
+        <div class="type-opt" data-et="firma" onclick="selEvTipo(this)">Firma</div>
+        <div class="type-opt" data-et="admin" onclick="selEvTipo(this)">Admin</div>
+        <div class="type-opt" data-et="incidencia" onclick="selEvTipo(this)">Incid.</div>
+      </div>
+      <div class="field"><label>Título</label><input type="text" id="ev-titulo" placeholder="Visita piso..."></div>
+      <div class="field"><label>Vivienda / contexto</label>
+        <select id="ev-viv-sel" onchange="onEvVivSel(this)" style="margin-bottom:6px">
+          <option value="">— Seleccionar vivienda activa —</option>
+          <option value="__otro__">✏️ Otro (escribir libremente)</option>
+          <option value="__general__">📋 General / administrativo</option>
+        </select>
+        <input type="text" id="ev-viv" placeholder="O escribe aquí..." style="display:none">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="field"><label>Fecha</label><input type="date" id="ev-fecha"></div>
+        <div class="field"><label>Hora</label>
+          <select id="ev-hora"><option>08:00</option><option>09:00</option><option>10:00</option><option>11:00</option><option>12:00</option><option>13:00</option><option>16:00</option><option>17:00</option><option>18:00</option><option>19:00</option></select>
+        </div>
+      </div>
+      <div class="notif-bar">
+        <input type="checkbox" id="ev-alerta" style="width:15px;height:15px;cursor:pointer">
+        <label for="ev-alerta" style="font-size:13px;color:#a16207;font-weight:700;cursor:pointer">🔔 Alerta 30 min antes</label>
+      </div>
+      <div class="alerta-warn" id="ev-alerta-warn" style="display:none">Activa las notificaciones del navegador para recibir alertas. Solo funcionan con la app abierta.</div>
+      <div class="field"><label>Notas</label><textarea id="ev-notas" placeholder="Detalles..."></textarea></div>
+      <div class="modal-footer">
+        <button class="btn-sm btn-danger" id="btn-del-ev" style="display:none" onclick="delEv()">Eliminar</button>
+        <button class="btn-sm btn-gray" onclick="closeModal('modal-ev')">Cancelar</button>
+        <button class="btn btn-save" onclick="saveEv()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ESTADOS -->
+<div class="modal-bg" id="modal-estados">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="modal-title">Gestionar estados del kanban</span>
+      <button class="modal-close" onclick="closeModal('modal-estados')">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="estados-list"></div>
+      <div style="border-top:1px solid #f0f0f0;padding-top:12px;margin-bottom:14px">
+        <div style="font-size:11px;font-weight:700;color:#aaa;text-transform:uppercase;margin-bottom:8px">Nuevo estado</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="color" id="new-est-color" value="#2563eb" style="width:30px;height:30px;border:1px solid #e0e0e0;border-radius:6px;cursor:pointer;padding:2px;flex-shrink:0">
+          <input type="text" id="new-est-label" placeholder="Nombre del estado">
+          <button class="btn" style="flex-shrink:0" onclick="addEstado()">+ Añadir</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn-sm btn-gray" onclick="closeModal('modal-estados')">Cancelar</button>
+        <button class="btn btn-save" onclick="saveEstados()">Guardar estados</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DETALLE CALENDARIO -->
+<div class="modal-bg" id="modal-cal-detail">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="modal-title" id="cal-detail-title">Eventos</span>
+      <button class="modal-close" onclick="closeModal('modal-cal-detail')">×</button>
+    </div>
+    <div class="modal-body" id="cal-detail-body"></div>
+  </div>
+</div>
+
+<script>
+const SK = 'inma_html_v2';
+
+// ── Google Sheets Sync ────────────────────────────────────────────────────────
+// Pega aquí la URL de tu Web App de Google Apps Script
+const GS_URL = 'https://script.google.com/macros/s/AKfycbyexBRa3ft-WxXTSS-HBigPTCvqkBzL7rnQJQQPfTOvpnmnscs7DCkRoZRQmMlZ4UmD/exec';
+
+let syncStatus = 'local'; // 'local' | 'syncing' | 'ok' | 'error'
+
+function setSyncStatus(s, msg){
+  syncStatus = s;
+  const el = document.getElementById('sync-status');
+  if(!el) return;
+  const cfg = {
+    local:   { text:'💾 Local',        color:'#888',    bg:'#f5f5f5'  },
+    syncing: { text:'🔄 Sincronizando…',color:'#a16207', bg:'#fef9c3'  },
+    ok:      { text:'☁️ Sincronizado',  color:'#15803d', bg:'#f0fdf4'  },
+    error:   { text:'⚠️ Error sync',    color:'#dc2626', bg:'#fef2f2'  },
+  };
+  const c = cfg[s]||cfg.local;
+  el.textContent = msg || c.text;
+  el.style.color = c.color;
+  el.style.background = c.bg;
+}
+
+async function gsGet(){
+  if(!GS_URL) return null;
+  try {
+    setSyncStatus('syncing');
+    const res = await fetch(GS_URL + '?action=get');
+    const json = await res.json();
+    if(json.ok && json.data && json.data[SK]){
+      setSyncStatus('ok');
+      return JSON.parse(json.data[SK]);
+    }
+    setSyncStatus('ok');
+    return null;
+  } catch(e){
+    setSyncStatus('error', '⚠️ Sin conexión');
+    return null;
+  }
+}
+
+async function gsSet(data){
+  if(!GS_URL) return;
+  try {
+    setSyncStatus('syncing');
+    await fetch(GS_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action:'set', key:SK, value:JSON.stringify(data) })
+    });
+    setSyncStatus('ok');
+  } catch(e){
+    setSyncStatus('error', '⚠️ No se pudo guardar en la nube');
+  }
+}
+const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const DIAS_S = ['L','M','X','J','V','S','D'];
+const DIAS_L = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+const TODAY = new Date().toISOString().split('T')[0];
+const fmt = n => Number(n).toLocaleString('es-ES');
+const uid = () => Math.random().toString(36).slice(2,9);
+
+const TIPO_INFO = {
+  alquiler:{label:'Alquiler',color:'#2563eb',bg:'#eff6ff'},
+  venta:{label:'Venta',color:'#16a34a',bg:'#f0fdf4'},
+  reforma:{label:'Reforma',color:'#d97706',bg:'#fffbeb'}
+};
+const EV_STYLE = {
+  visita:{bg:'#dbeafe',color:'#1d4ed8',border:'#3b82f6'},
+  firma:{bg:'#dcfce7',color:'#15803d',border:'#22c55e'},
+  admin:{bg:'#fef9c3',color:'#a16207',border:'#eab308'},
+  incidencia:{bg:'#fee2e2',color:'#b91c1c',border:'#ef4444'}
+};
+const CAT_STYLE = {
+  alquiler:{bg:'#eff6ff',color:'#1d4ed8'},comision:{bg:'#dcfce7',color:'#15803d'},
+  gasto:{bg:'#fef2f2',color:'#b91c1c'},comunidad:{bg:'#fef3c7',color:'#a16207'},
+  reparacion:{bg:'#fef2f2',color:'#b91c1c'},asesoria:{bg:'#f3f4f6',color:'#374151'},
+  hipoteca:{bg:'#fdf2f8',color:'#9d174d'},seguro:{bg:'#f0fdf4',color:'#166534'}
+};
+const PRIO_COLOR = {alta:'#dc2626',media:'#d97706',baja:'#16a34a'};
+const ESTADO_INC = {
+  abierta:{label:'Abierta',bg:'#fee2e2',color:'#dc2626'},
+  en_curso:{label:'En curso',bg:'#fef3c7',color:'#d97706'},
+  pendiente:{label:'Pendiente',bg:'#fef3c7',color:'#d97706'},
+  resuelta:{label:'Resuelta',bg:'#dcfce7',color:'#16a34a'}
+};
+
+const defaultEstados = [
+  {id:'captacion',label:'Captación',color:'#8b5cf6'},
+  {id:'proceso',label:'En proceso',color:'#2563eb'},
+  {id:'negociacion',label:'Negociación',color:'#d97706'},
+  {id:'cerrado',label:'Cerrado',color:'#16a34a'}
+];
+
+const defaultData = {
+  estados: defaultEstados,
+  viviendas:[
+    {id:'v1',tipo:'venta',inmueble:'Piso',gestion:'directa',direccion:'Av. Castellana 15, 1ºA',habs:'4',m2:'110',precio:'490.000 €',propietario:'Rafael M.',estado:'proceso',archivada:false,notas:'3 visitas pendientes.',fecha:'2025-06-01',docs:[]},
+    {id:'v2',tipo:'alquiler',inmueble:'Piso',gestion:'directa',direccion:'C/ Gran Vía 10, 2ºD',habs:'1',m2:'45',precio:'950 €/mes',propietario:'Sra. López',estado:'proceso',archivada:false,notas:'Inquilino: Pablo G.',fecha:'2025-05-15',docs:[]},
+    {id:'v3',tipo:'reforma',inmueble:'Piso',gestion:'inmobiliaria',direccion:'C/ Alcalá 88, 5ºC',habs:'3',m2:'90',precio:'En reforma',propietario:'Carlos B.',estado:'proceso',archivada:false,notas:'Avería caldera.',fecha:'2025-06-10',docs:[],inmobiliaria:'Fincas Centro'},
+    {id:'v4',tipo:'venta',inmueble:'Casa',gestion:'directa',direccion:'C/ Fuencarral 34, 4ºA',habs:'3',m2:'75',precio:'285.000 €',propietario:'Carlos M.',estado:'captacion',archivada:false,notas:'Pendiente fotos.',fecha:'2025-06-20',docs:[]},
+    {id:'v5',tipo:'alquiler',inmueble:'Apartamento',gestion:'inmobiliaria',direccion:'Av. Recoletos 8, 1ºB',habs:'2',m2:'60',precio:'1.100 €/mes',propietario:'Lucía R.',estado:'captacion',archivada:false,notas:'Sin mascotas.',fecha:'2025-06-22',docs:[],inmobiliaria:'Idealista Pro'},
+    {id:'v6',tipo:'venta',inmueble:'Piso',gestion:'directa',direccion:'C/ Serrano 42, 3ºB',habs:'3',m2:'95',precio:'380.000 €',propietario:'Ana T.',estado:'negociacion',archivada:false,notas:'Contrapropuesta pendiente.',fecha:'2025-06-18',docs:[]},
+    {id:'v7',tipo:'alquiler',inmueble:'Ático',gestion:'inmobiliaria',direccion:'Ps. Prado 22, 6ºA',habs:'2',m2:'70',precio:'1.400 €/mes',propietario:'Javier N.',estado:'negociacion',archivada:false,notas:'2 candidatos.',fecha:'2025-06-15',docs:[],inmobiliaria:'RE/MAX'},
+    {id:'v8',tipo:'alquiler',inmueble:'Piso',gestion:'directa',direccion:'C/ Hortaleza 55, 2ºC',habs:'2',m2:'65',precio:'1.050 €/mes',propietario:'Sra. Ruiz',estado:'cerrado',archivada:false,notas:'Contrato firmado jun 2025.',fecha:'2025-06-05',docs:[]}
+  ],
+  pagos:[
+    {id:'p1',concepto:'Alquiler mensual',vivienda:'C/ Gran Vía 10',gestion:'directa',categoria:'alquiler',importe:950,tipo:'ingreso',fecha:'2025-07-01',estado:'cobrado'},
+    {id:'p2',concepto:'Alquiler mensual',vivienda:'C/ Hortaleza 55',gestion:'directa',categoria:'alquiler',importe:1050,tipo:'ingreso',fecha:'2025-07-01',estado:'cobrado'},
+    {id:'p3',concepto:'Honorarios cierre',vivienda:'Av. Castellana 15',gestion:'directa',categoria:'comision',importe:2250,tipo:'ingreso',fecha:'2025-07-03',estado:'cobrado'},
+    {id:'p4',concepto:'Seguro multirriesgo',vivienda:'C/ Serrano 42',gestion:'directa',categoria:'seguro',importe:180,tipo:'gasto',fecha:'2025-07-05',estado:'pendiente'},
+    {id:'p5',concepto:'Alquiler mensual',vivienda:'Ps. Prado 22',gestion:'inmobiliaria',categoria:'alquiler',importe:1400,tipo:'ingreso',fecha:'2025-08-01',estado:'pendiente'},
+    {id:'p6',concepto:'Alquiler mensual',vivienda:'C/ Gran Vía 10',gestion:'directa',categoria:'alquiler',importe:950,tipo:'ingreso',fecha:'2025-06-01',estado:'cobrado'},
+    {id:'p7',concepto:'Gestoría IRPF',vivienda:'General',gestion:'directa',categoria:'asesoria',importe:400,tipo:'gasto',fecha:'2025-06-20',estado:'cobrado'}
+  ],
+  incidencias:[
+    {id:'i1',titulo:'Avería caldera',vivienda:'C/ Alcalá 88, 5ºC',gestion:'inmobiliaria',prioridad:'alta',estado:'abierta',descripcion:'Técnico contactado.',fecha:'2025-06-24',tipo:'averia'},
+    {id:'i2',titulo:'Humedad en pared baño',vivienda:'C/ Gran Vía 10, 2ºD',gestion:'directa',prioridad:'media',estado:'en_curso',descripcion:'Fontanero visitó el 20 jun.',fecha:'2025-06-18',tipo:'averia'},
+    {id:'i3',titulo:'Renovar contrato septiembre',vivienda:'C/ Hortaleza 55, 2ºC',gestion:'directa',prioridad:'baja',estado:'pendiente',descripcion:'Actualización IPC.',fecha:'2025-06-15',tipo:'nota'}
+  ],
+  eventos:[
+    {id:'e1',titulo:'Visita Castellana 15',tipo:'visita',fecha:'2025-07-02',hora:'09:00',vivienda:'Av. Castellana 15',alerta:true},
+    {id:'e2',titulo:'Firma contrato Serrano',tipo:'firma',fecha:'2025-07-02',hora:'10:00',vivienda:'C/ Serrano 42',alerta:true},
+    {id:'e3',titulo:'Gestión IRPF trim.',tipo:'admin',fecha:'2025-07-01',hora:'10:00',vivienda:'General',alerta:false},
+    {id:'e4',titulo:'Técnico caldera',tipo:'incidencia',fecha:'2025-07-03',hora:'12:00',vivienda:'C/ Alcalá 88',alerta:true}
+  ]
+};
+
+let D = JSON.parse(localStorage.getItem(SK) || 'null') || defaultData;
+// Migrar datos viejos que no tengan campo estados
+if (!D.estados) D.estados = defaultEstados;
+function save() {
+  localStorage.setItem(SK, JSON.stringify(D));
+  // Sync to Google Sheets (debounced 1.5s to avoid too many calls)
+  if(window._syncTimer) clearTimeout(window._syncTimer);
+  window._syncTimer = setTimeout(() => gsSet(D), 1500);
+}
+
+let gf = {dash:'todas',kan:'todas',fin:'todas',cal:'todas',inc:'todas'};
+let incFiltro = 'todas';
+let showArchivo = false;
+let semana = 0;
+
+// ── Selecciones de modal ─────────────────────────────────────────────────────
+let vivEditing=null, vivTipo='alquiler', vivGest='directa', vivEstadoSel='';
+let pagoEditing=null, pagoTipo='ingreso', pagoGest='directa';
+let incEditing=null, incGest='directa', incPrio='media';
+let evEditing=null, evTipo='visita';
+let currentDocs=[], selectedDocs=[];
+let estTemp=[];
+
+// ── Nav ───────────────────────────────────────────────────────────────────────
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  btn.classList.add('active');
+  const renders={dashboard:renderDash,kanban:renderKanban,finanzas:renderFinanzas,
+    calendario:renderCal,incidencias:renderInc,planner:renderPlanner};
+  if(renders[id]) renders[id]();
+}
+
+function setGF(sec, val, btn) {
+  gf[sec]=val;
+  const cont=document.getElementById(sec+'-gf');
+  if(cont) cont.querySelectorAll('.gfbtn').forEach(b=>{b.className='gfbtn';});
+  if(btn){ btn.className='gfbtn '+(val==='todas'?'act-t':val==='directa'?'act-d':'act-i'); }
+  const renders={dash:renderDash,kan:renderKanban,fin:renderFinanzas,cal:renderCal,inc:renderInc};
+  if(renders[sec]) renders[sec]();
+}
+
+function gbadge(g) {
+  return g==='inmobiliaria'
+    ? '<span class="badge badge-i">Inmo.</span>'
+    : '<span class="badge badge-d">Directa</span>';
+}
+
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+
+// ── DASHBOARD ─────────────────────────────────────────────────────────────────
+function renderDash() {
+  const g=gf.dash, mes=TODAY.slice(0,7);
+  const vf=D.viviendas.filter(v=>!v.archivada&&(g==='todas'||v.gestion===g));
+  const pf=D.pagos.filter(p=>p.fecha.startsWith(mes)&&(g==='todas'||p.gestion===g));
+  const ing=pf.filter(p=>p.tipo==='ingreso').reduce((a,p)=>a+p.importe,0);
+  const gas=pf.filter(p=>p.tipo==='gasto').reduce((a,p)=>a+p.importe,0);
+  const incAb=D.incidencias.filter(i=>i.estado!=='resuelta'&&(g==='todas'||i.gestion===g)).length;
+  document.getElementById('dash-stats').innerHTML=[
+    {l:'Viviendas activas',v:vf.length,s:vf.filter(v=>v.tipo==='alquiler').length+' alquiler · '+vf.filter(v=>v.tipo==='venta').length+' venta',c:'#2563eb'},
+    {l:'Ingresos '+MESES[parseInt(mes.slice(5))-1],v:fmt(ing)+' €',s:'Este mes',c:'#16a34a'},
+    {l:'Gastos '+MESES[parseInt(mes.slice(5))-1],v:fmt(gas)+' €',s:'Este mes',c:'#d97706'},
+    {l:'Incidencias abiertas',v:incAb,s:D.incidencias.filter(i=>i.prioridad==='alta').length+' urgente',c:'#dc2626'}
+  ].map(s=>`<div class="stat-card"><div class="stat-label">${s.l}</div><div class="stat-val" style="color:${s.c}">${s.v}</div><div class="stat-sub">${s.s}</div></div>`).join('');
+  const pp=D.pagos.filter(p=>p.estado==='pendiente'&&(g==='todas'||p.gestion===g)).sort((a,b)=>a.fecha.localeCompare(b.fecha)).slice(0,5);
+  document.getElementById('dash-pagos').innerHTML=pp.length===0?'<div style="font-size:13px;color:#ccc;text-align:center;padding:12px 0">Sin pagos pendientes</div>':
+    pp.map(p=>`<div class="list-item"><div><div style="font-size:13px;color:#222">${p.concepto}</div><div style="display:flex;gap:5px;align-items:center;margin-top:2px"><span style="font-size:11px;color:#aaa">${p.fecha}</span>${gbadge(p.gestion||'directa')}</div></div><div style="font-size:13px;font-weight:700;color:${p.tipo==='ingreso'?'#16a34a':'#dc2626'}">${p.tipo==='ingreso'?'+':'-'}${fmt(p.importe)} €</div></div>`).join('');
+  const pe=D.eventos.filter(e=>e.fecha>=TODAY).sort((a,b)=>a.fecha.localeCompare(b.fecha)).slice(0,5);
+  document.getElementById('dash-eventos').innerHTML=pe.map(e=>{
+    const st=EV_STYLE[e.tipo]||EV_STYLE.admin;
+    return `<div class="list-item"><div style="display:flex;gap:10px;align-items:flex-start"><div style="width:5px;min-height:20px;border-radius:3px;background:${st.border};flex-shrink:0"></div><div><div style="font-size:13px;color:#222">${e.titulo}${e.alerta?' 🔔':''}</div><div style="font-size:11px;color:#aaa;margin-top:1px">${e.fecha} · ${e.hora}</div></div></div></div>`;
+  }).join('');
+}
+
+// ── KANBAN ────────────────────────────────────────────────────────────────────
+function toggleArchivo(){
+  showArchivo=!showArchivo;
+  document.getElementById('kanban-activas').style.display=showArchivo?'none':'block';
+  document.getElementById('kanban-archivo').style.display=showArchivo?'block':'none';
+  document.getElementById('btn-archivo').textContent=showArchivo?'← Ver activas':'🗄 Archivo';
+  renderKanban();
+}
+
+function renderKanban(){
+  const g=gf.kan;
+  if(showArchivo){
+    const arch=D.viviendas.filter(v=>v.archivada&&(g==='todas'||v.gestion===g));
+    document.getElementById('arch-grid').innerHTML=arch.length===0?'<div style="color:#ccc;font-size:13px;text-align:center;padding:40px">Sin viviendas archivadas.</div>':
+      arch.map(v=>{
+        const ti=TIPO_INFO[v.tipo]||{label:v.tipo,color:'#888'};
+        return `<div class="arch-card"><div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:10px;font-weight:700;text-transform:uppercase;color:${ti.color}">${ti.label}${v.inmueble?' · '+v.inmueble:''}</span>${gbadge(v.gestion||'directa')}</div><div style="font-size:13px;font-weight:600;color:#333;margin-bottom:3px">${v.direccion}</div><div style="font-size:12px;color:#aaa;margin-bottom:10px">${v.precio||''} · ${v.propietario||''}</div><button class="btn-sm" style="border-color:#bfdbfe;background:#eff6ff;color:#1d4ed8" onclick="desarchivar('${v.id}')">Restaurar al tablero</button></div>`;
+      }).join('');
+    return;
+  }
+  const vivas=D.viviendas.filter(v=>!v.archivada&&(g==='todas'||v.gestion===g));
+  document.getElementById('kanban-board').innerHTML=D.estados.map(est=>{
+    const cards=vivas.filter(v=>v.estado===est.id);
+    return `<div class="kanban-col" style="border-top-color:${est.color}" ondragover="event.preventDefault()" ondrop="dropCard(event,'${est.id}')">
+      <div class="col-header">
+        <button onclick="event.stopPropagation();moveEstado('${est.id}',-1)" title="Mover izquierda"
+          style="background:none;border:none;cursor:pointer;font-size:14px;padding:0 2px;line-height:1;opacity:${D.estados.indexOf(est)===0?0.25:0.6}">&#8592;</button>
+        <span class="col-label" style="color:${est.color}">${est.label}</span>
+        <div style="display:flex;align-items:center;gap:3px">
+          <span class="col-count">${cards.length}</span>
+          <button onclick="event.stopPropagation();moveEstado('${est.id}',1)" title="Mover derecha"
+            style="background:none;border:none;cursor:pointer;font-size:14px;padding:0 2px;line-height:1;opacity:${D.estados.indexOf(est)===D.estados.length-1?0.25:0.6}">&#8594;</button>
+        </div>
+      </div>
+      ${cards.map(v=>{
+        const ti=TIPO_INFO[v.tipo]||{label:v.tipo,color:'#888'};
+        return `<div class="prop-card" draggable="true" ondragstart="event.dataTransfer.setData('vid','${v.id}')" onclick="openViv('${v.id}')">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span class="prop-tipo" style="color:${ti.color}">${ti.label}${v.inmueble?' · '+v.inmueble:''}</span>
+            ${gbadge(v.gestion||'directa')}
+          </div>
+          <div class="prop-dir">${v.direccion}</div>
+          <div class="prop-tags">
+            ${v.habs?`<span class="ptag">🛏 ${v.habs}</span>`:''}
+            ${v.m2?`<span class="ptag">${v.m2}m²</span>`:''}
+            ${(v.docs&&v.docs.length>0)?`<span class="ptag">📎${v.docs.length}</span>`:''}
+            ${v.inmobiliaria?`<span class="ptag ptag-i">${v.inmobiliaria}</span>`:''}
+          </div>
+          ${v.precio?`<div class="prop-price">${v.precio}</div>`:''}
+        </div>`;
+      }).join('')}
+    </div>`;
+  }).join('');
+}
+
+function dropCard(e,estadoId){
+  const vid=e.dataTransfer.getData('vid');
+  D.viviendas=D.viviendas.map(v=>v.id===vid?{...v,estado:estadoId}:v);
+  save(); renderKanban();
+}
+
+function desarchivar(id){
+  D.viviendas=D.viviendas.map(v=>v.id===id?{...v,archivada:false}:v);
+  save(); renderKanban();
+}
+
+// ── MODAL VIVIENDA ────────────────────────────────────────────────────────────
+function openViv(id){
+  vivEditing=id;
+  const v=id?D.viviendas.find(x=>x.id===id):null;
+  document.getElementById('viv-title').textContent=id?'Editar vivienda':'Nueva vivienda';
+  document.getElementById('btn-archivar').style.display=id?'inline-block':'none';
+  document.getElementById('btn-del-viv').style.display=id?'inline-block':'none';
+  vivTipo=v?.tipo||'alquiler';
+  vivGest=v?.gestion||'directa';
+  vivEstadoSel=v?.estado||D.estados[0]?.id||'';
+  document.getElementById('viv-inmueble').value=v?.inmueble||'';
+  document.getElementById('viv-dir').value=v?.direccion||'';
+  document.getElementById('viv-habs').value=v?.habs||'';
+  document.getElementById('viv-m2').value=v?.m2||'';
+  document.getElementById('viv-precio').value=v?.precio||'';
+  document.getElementById('viv-prop').value=v?.propietario||'';
+  document.getElementById('viv-notas').value=v?.notas||'';
+  document.getElementById('viv-inmo').value=v?.inmobiliaria||'';
+  currentDocs=v?.docs?JSON.parse(JSON.stringify(v.docs)):[];
+  selectedDocs=[];
+  renderDocList();
+  renderVivTipoSel();
+  renderVivGestSel();
+  renderVivEstadoSel();   // <-- usa los estados actuales de D
+  document.getElementById('modal-viv').classList.add('open');
+}
+
+function renderVivTipoSel(){
+  document.querySelectorAll('#viv-tipo-sel .type-opt').forEach(el=>{
+    const t=el.dataset.t, ti=TIPO_INFO[t];
+    el.style.borderColor=vivTipo===t?ti.color:'#e5e5e5';
+    el.style.background=vivTipo===t?ti.bg:'#fff';
+    el.style.color=vivTipo===t?ti.color:'#bbb';
+  });
+  const labels={alquiler:'Renta mensual',venta:'Precio venta',reforma:'Estado reforma'};
+  document.getElementById('viv-precio-label').textContent=labels[vivTipo]||'Precio';
+}
+function selTipo(el){ vivTipo=el.dataset.t; renderVivTipoSel(); }
+
+function renderVivGestSel(){
+  document.querySelectorAll('#viv-gest-sel .type-opt').forEach(el=>{
+    const g=el.dataset.g, c=g==='directa'?'#16a34a':'#7c3aed', bg=g==='directa'?'#dcfce7':'#f5f3ff';
+    el.style.borderColor=vivGest===g?c:'#e5e5e5';
+    el.style.background=vivGest===g?bg:'#fff';
+    el.style.color=vivGest===g?c:'#bbb';
+  });
+  document.getElementById('field-inmo').style.display=vivGest==='inmobiliaria'?'block':'none';
+}
+function selGest(el){ vivGest=el.dataset.g; renderVivGestSel(); }
+
+// CLAVE: esta función regenera los botones de estado CADA VEZ que se abre el modal
+// usando D.estados en ese momento, por lo que siempre refleja los estados actuales
+function renderVivEstadoSel(){
+  const cont=document.getElementById('viv-estado-sel');
+  const cols=Math.min(4,D.estados.length);
+  cont.style.gridTemplateColumns=`repeat(${cols},1fr)`;
+  cont.innerHTML=D.estados.map(est=>`
+    <div class="type-opt" data-eid="${est.id}" onclick="selVivEstado(this)"
+      style="border-color:${vivEstadoSel===est.id?est.color:'#e5e5e5'};background:${vivEstadoSel===est.id?'#f0f7ff':'#fff'};color:${vivEstadoSel===est.id?est.color:'#bbb'}">
+      ${est.label}
+    </div>`).join('');
+}
+function selVivEstado(el){
+  vivEstadoSel=el.dataset.eid;
+  renderVivEstadoSel();
+}
+
+function saveViv(){
+  const dir=document.getElementById('viv-dir').value.trim();
+  if(!dir){alert('La dirección es obligatoria.');return;}
+  if(!vivEstadoSel&&D.estados.length>0) vivEstadoSel=D.estados[0].id;
+  const viv={
+    id:vivEditing||uid(),tipo:vivTipo,inmueble:document.getElementById('viv-inmueble').value,
+    gestion:vivGest,direccion:dir,habs:document.getElementById('viv-habs').value,
+    m2:document.getElementById('viv-m2').value,precio:document.getElementById('viv-precio').value,
+    propietario:document.getElementById('viv-prop').value,estado:vivEstadoSel,
+    archivada:vivEditing?D.viviendas.find(v=>v.id===vivEditing)?.archivada||false:false,
+    notas:document.getElementById('viv-notas').value,fecha:TODAY,docs:currentDocs,
+    inmobiliaria:vivGest==='inmobiliaria'?document.getElementById('viv-inmo').value:''
+  };
+  if(vivEditing) D.viviendas=D.viviendas.map(v=>v.id===vivEditing?viv:v);
+  else D.viviendas.push(viv);
+  save(); renderKanban(); closeModal('modal-viv');
+}
+function delViv(){
+  if(!confirm('¿Eliminar esta vivienda? Esta acción no se puede deshacer.')) return;
+  const dir = D.viviendas.find(v=>v.id===vivEditing)?.direccion||'';
+  // Buscar eventos e incidencias vinculadas por dirección
+  const evsVinc = D.eventos.filter(e=>e.vivienda&&dir&&e.vivienda.includes(dir.split(',')[0]));
+  const incVinc = D.incidencias.filter(i=>i.vivienda&&dir&&i.vivienda.includes(dir.split(',')[0]));
+  const total = evsVinc.length + incVinc.length;
+  let eliminarVinc = false;
+  if(total > 0){
+    const resp = confirm('Se han encontrado '+total+' elemento(s) vinculado(s) a esta vivienda:\n\n'+
+      (evsVinc.length>0 ? '· '+evsVinc.length+' evento(s) en el planner\n' : '')+
+      (incVinc.length>0 ? '· '+incVinc.length+' incidencia(s)\n' : '')+
+      '\n¿Quieres eliminarlos también?\n(Cancelar = mantenerlos, Aceptar = eliminarlos)');
+    eliminarVinc = resp;
+  }
+  D.viviendas = D.viviendas.filter(v=>v.id!==vivEditing);
+  if(eliminarVinc){
+    const cal = dir.split(',')[0];
+    D.eventos = D.eventos.filter(e=>!e.vivienda||!e.vivienda.includes(cal));
+    D.incidencias = D.incidencias.filter(i=>!i.vivienda||!i.vivienda.includes(cal));
+  }
+  save(); renderKanban(); closeModal('modal-viv');
+  if(eliminarVinc && total>0) alert('Vivienda y '+total+' elemento(s) eliminados correctamente.');
+  else alert('Vivienda eliminada correctamente.');
+}
+function archivarViv(){D.viviendas=D.viviendas.map(v=>v.id===vivEditing?{...v,archivada:true}:v);save();renderKanban();closeModal('modal-viv');}
+
+// ── DOCUMENTOS ────────────────────────────────────────────────────────────────
+function addDocs(files){
+  Array.from(files).forEach(f=>{
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      currentDocs.push({id:uid(),name:f.name,type:f.type,data:ev.target.result,fecha:TODAY});
+      renderDocList();
+    };
+    reader.readAsDataURL(f);
+  });
+}
+function renderDocList(){
+  const el=document.getElementById('doc-list');
+  el.innerHTML=currentDocs.length===0?'<div style="text-align:center;padding:14px 0;color:#ccc;font-size:12px">Sin documentos adjuntos</div>':
+    currentDocs.map(doc=>{
+      const isSel=selectedDocs.includes(doc.id);
+      const isImg=doc.type&&doc.type.startsWith('image');
+      return `<div class="doc-item ${isSel?'sel':''}" onclick="toggleDocSel('${doc.id}')">
+        ${isImg?`<img src="${doc.data}" class="doc-thumb" style="object-fit:cover" alt="">`:`<div class="doc-thumb">📄</div>`}
+        <div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600;color:#333;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${doc.name}</div><div style="font-size:10px;color:#aaa">${doc.fecha}</div></div>
+        <button onclick="event.stopPropagation();shareOneDoc('${doc.id}')" style="background:none;border:none;cursor:pointer;font-size:14px;padding:2px" title="Compartir">↑</button>
+        <button onclick="event.stopPropagation();removeDoc('${doc.id}')" style="background:none;border:none;cursor:pointer;font-size:14px;padding:2px;color:#dc2626" title="Eliminar">×</button>
+      </div>`;
+    }).join('');
+  document.getElementById('btn-email-docs').style.display=selectedDocs.length>0?'inline-block':'none';
+  document.getElementById('btn-share-docs').style.display=selectedDocs.length>0?'inline-block':'none';
+}
+function toggleDocSel(id){selectedDocs=selectedDocs.includes(id)?selectedDocs.filter(x=>x!==id):[...selectedDocs,id];renderDocList();}
+function removeDoc(id){currentDocs=currentDocs.filter(d=>d.id!==id);selectedDocs=selectedDocs.filter(x=>x!==id);renderDocList();}
+async function shareOneDoc(id){
+  const doc=currentDocs.find(d=>d.id===id);if(!doc)return;
+  try{const res=await fetch(doc.data);const blob=await res.blob();const file=new File([blob],doc.name,{type:doc.type});
+    if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]}))await navigator.share({files:[file],title:doc.name});
+    else{const a=document.createElement('a');a.href=doc.data;a.download=doc.name;a.click();}
+  }catch(e){}
+}
+function emailDocs(){window.location.href='mailto:?subject=Documentos vivienda&body=Adjunto: '+encodeURIComponent(currentDocs.filter(d=>selectedDocs.includes(d.id)).map(d=>d.name).join(', '));}
+function shareDocs(){selectedDocs.forEach(id=>shareOneDoc(id));}
+
+// ── ESTADOS KANBAN ────────────────────────────────────────────────────────────
+function openEstados(){
+  estTemp=D.estados.map(e=>({...e}));
+  renderEstadosList();
+  document.getElementById('modal-estados').classList.add('open');
+}
+function renderEstadosList(){
+  document.getElementById('estados-list').innerHTML=estTemp.map((e,i)=>`
+    <div class="estados-item" style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+      <input type="color" value="${e.color}" data-idx="${i}" onchange="estTemp[${i}].color=this.value"
+        style="width:30px;height:30px;border:1px solid #e0e0e0;border-radius:6px;cursor:pointer;padding:2px;flex-shrink:0">
+      <input type="text" value="${e.label}" data-idx="${i}" oninput="estTemp[${i}].label=this.value" style="flex:1">
+      <button class="btn-sm btn-danger" onclick="estTemp.splice(${i},1);renderEstadosList()">×</button>
+    </div>`).join('');
+}
+function addEstado(){
+  const label=document.getElementById('new-est-label').value.trim();
+  if(!label){alert('Escribe un nombre para el estado.');return;}
+  estTemp.push({id:uid(),label,color:document.getElementById('new-est-color').value});
+  document.getElementById('new-est-label').value='';
+  renderEstadosList();
+}
+function moveEstado(id, dir){
+  const idx = D.estados.findIndex(e=>e.id===id);
+  if(idx<0) return;
+  const newIdx = idx+dir;
+  if(newIdx<0||newIdx>=D.estados.length) return;
+  const arr = [...D.estados];
+  const tmp = arr[idx]; arr[idx]=arr[newIdx]; arr[newIdx]=tmp;
+  D.estados = arr;
+  save(); renderKanban();
+}
+
+function saveEstados(){
+  if(estTemp.length===0){alert('Debe haber al menos un estado.');return;}
+  D.estados=estTemp.map(e=>({...e})); // copia limpia
+  // Reasignar viviendas huérfanas al primer estado
+  const ids=D.estados.map(e=>e.id);
+  D.viviendas=D.viviendas.map(v=>ids.includes(v.estado)?v:{...v,estado:D.estados[0].id});
+  save(); renderKanban(); closeModal('modal-estados');
+}
+
+// ── FINANZAS ──────────────────────────────────────────────────────────────────
+function renderFinanzas(){
+  const g=gf.fin;
+  const vista=document.getElementById('fin-vista').value;
+  const mes=document.getElementById('fin-mes').value;
+  document.getElementById('fin-mes').style.display=vista==='mensual'?'block':'none';
+
+  if(vista==='anual'){
+    renderFinanzasAnual(g);
+  } else {
+    renderFinanzasMes(g, mes);
+  }
+}
+
+function finSummaryHTML(pf){
+  const ing=pf.filter(p=>p.tipo==='ingreso').reduce((a,p)=>a+p.importe,0);
+  const gas=pf.filter(p=>p.tipo==='gasto').reduce((a,p)=>a+p.importe,0);
+  return `
+    <div class="fin-card" style="background:#f0fdf4;border:1px solid #bbf7d0">
+      <div style="font-size:12px;color:#16a34a;margin-bottom:4px">Ingresos</div>
+      <div style="font-size:20px;font-weight:700;color:#16a34a">${fmt(ing)} €</div>
+    </div>
+    <div class="fin-card" style="background:#fef2f2;border:1px solid #fecaca">
+      <div style="font-size:12px;color:#dc2626;margin-bottom:4px">Gastos</div>
+      <div style="font-size:20px;font-weight:700;color:#dc2626">${fmt(gas)} €</div>
+    </div>
+    <div class="fin-card" style="background:#eff6ff;border:1px solid #bfdbfe">
+      <div style="font-size:12px;color:#2563eb;margin-bottom:4px">Neto</div>
+      <div style="font-size:20px;font-weight:700;color:#2563eb">${fmt(ing-gas)} €</div>
+    </div>`;
+}
+
+function txRowHTML(p){
+  const cs=CAT_STYLE[p.categoria]||{bg:'#f3f4f6',color:'#374151'};
+  return `<div class="tx-row" style="grid-template-columns:1fr 1fr 110px 90px 80px;min-width:480px" onclick="openPago('${p.id}')">
+    <div><div style="font-size:13px;color:#222">${p.concepto}</div>
+      <div style="display:flex;gap:5px;align-items:center;margin-top:2px">
+        <span style="font-size:11px;color:#aaa">${p.fecha}</span>${gbadge(p.gestion||'directa')}
+      </div>
+    </div>
+    <div style="font-size:12px;color:#555">${p.vivienda}</div>
+    <div><span class="cat-badge" style="background:${cs.bg};color:${cs.color}">${p.categoria}</span></div>
+    <div style="text-align:right;font-size:13px;font-weight:700;color:${p.tipo==='ingreso'?'#16a34a':'#dc2626'}">${p.tipo==='ingreso'?'+':'-'}${fmt(p.importe)} €</div>
+    <div style="text-align:center"><span class="estado-badge" style="background:${p.estado==='cobrado'?'#dcfce7':'#fef3c7'};color:${p.estado==='cobrado'?'#15803d':'#a16207'}" onclick="event.stopPropagation();togglePago('${p.id}')">${p.estado==='cobrado'?'✓ Cobrado':'⏳ Pdte'}</span></div>
+  </div>`;
+}
+
+function renderFinanzasMes(g, mes){
+  const pf=D.pagos.filter(p=>p.fecha.startsWith(mes)&&(g==='todas'||p.gestion===g));
+  document.getElementById('fin-summary').innerHTML=finSummaryHTML(pf);
+  document.getElementById('fin-content').innerHTML=`
+    <div class="tx-table">
+      <div class="tx-head" style="grid-template-columns:1fr 1fr 110px 90px 80px;min-width:480px">
+        <span>Concepto</span><span>Vivienda</span><span>Categoría</span>
+        <span style="text-align:right">Importe</span><span style="text-align:center">Estado</span>
+      </div>
+      ${pf.length===0?'<div class="empty-msg">Sin movimientos este mes.</div>':pf.map(txRowHTML).join('')}
+    </div>`;
+}
+
+function renderFinanzasAnual(g){
+  const allPagos=D.pagos.filter(p=>(g==='todas'||p.gestion===g));
+  document.getElementById('fin-summary').innerHTML=finSummaryHTML(allPagos);
+
+  let html='';
+  for(let m=1;m<=12;m++){
+    const key=`2025-${String(m).padStart(2,'0')}`;
+    const pf=allPagos.filter(p=>p.fecha.startsWith(key));
+    if(pf.length===0) continue;
+    const ing=pf.filter(p=>p.tipo==='ingreso').reduce((a,p)=>a+p.importe,0);
+    const gas=pf.filter(p=>p.tipo==='gasto').reduce((a,p)=>a+p.importe,0);
+    html+=`
+      <div class="tx-table">
+        <div class="fin-month-header">
+          <span>${MESES[m-1]} 2025</span>
+          <span class="fin-month-totals">+${fmt(ing)} € ingresos &nbsp;·&nbsp; -${fmt(gas)} € gastos &nbsp;·&nbsp; <strong style="color:${ing-gas>=0?'#16a34a':'#dc2626'}">${fmt(ing-gas)} € neto</strong></span>
+        </div>
+        <div class="tx-head" style="grid-template-columns:1fr 1fr 110px 90px 80px;min-width:480px">
+          <span>Concepto</span><span>Vivienda</span><span>Categoría</span>
+          <span style="text-align:right">Importe</span><span style="text-align:center">Estado</span>
+        </div>
+        ${pf.map(txRowHTML).join('')}
+      </div>`;
+  }
+  document.getElementById('fin-content').innerHTML=html||'<div class="empty-msg">Sin movimientos registrados en 2025.</div>';
+}
+
+function togglePago(id){D.pagos=D.pagos.map(p=>p.id===id?{...p,estado:p.estado==='cobrado'?'pendiente':'cobrado'}:p);save();renderFinanzas();}
+
+function openPago(id){
+  pagoEditing=id;
+  const p=id?D.pagos.find(x=>x.id===id):null;
+  document.getElementById('pago-title').textContent=id?'Editar movimiento':'Nuevo movimiento';
+  document.getElementById('btn-del-pago').style.display=id?'inline-block':'none';
+  pagoTipo=p?.tipo||'ingreso'; pagoGest=p?.gestion||'directa';
+  document.getElementById('pago-concepto').value=p?.concepto||'';
+  document.getElementById('pago-viv').value=p?.vivienda||'';
+  document.getElementById('pago-cat').value=p?.categoria||'alquiler';
+  document.getElementById('pago-importe').value=p?.importe||'';
+  document.getElementById('pago-fecha').value=p?.fecha||TODAY;
+  document.getElementById('pago-estado').value=p?.estado||'pendiente';
+  renderPagoSels();
+  document.getElementById('modal-pago').classList.add('open');
+}
+function renderPagoSels(){
+  document.querySelectorAll('#pago-tipo-sel .type-opt').forEach(el=>{
+    const t=el.dataset.pt,c=t==='ingreso'?'#16a34a':'#dc2626',bg=t==='ingreso'?'#dcfce7':'#fee2e2';
+    el.style.borderColor=pagoTipo===t?c:'#e5e5e5';el.style.background=pagoTipo===t?bg:'#fff';el.style.color=pagoTipo===t?c:'#bbb';
+  });
+  document.querySelectorAll('#pago-gest-sel .type-opt').forEach(el=>{
+    const g=el.dataset.g,c=g==='directa'?'#16a34a':'#7c3aed',bg=g==='directa'?'#dcfce7':'#f5f3ff';
+    el.style.borderColor=pagoGest===g?c:'#e5e5e5';el.style.background=pagoGest===g?bg:'#fff';el.style.color=pagoGest===g?c:'#bbb';
+  });
+}
+function selPagoTipo(el){pagoTipo=el.dataset.pt;renderPagoSels();}
+function selPagoGest(el){pagoGest=el.dataset.g;renderPagoSels();}
+function savePago(){
+  const c=document.getElementById('pago-concepto').value.trim();
+  const imp=document.getElementById('pago-importe').value;
+  if(!c||!imp){alert('Concepto e importe son obligatorios.');return;}
+  const p={id:pagoEditing||uid(),concepto:c,vivienda:document.getElementById('pago-viv').value,gestion:pagoGest,
+    categoria:document.getElementById('pago-cat').value,importe:parseFloat(imp),tipo:pagoTipo,
+    fecha:document.getElementById('pago-fecha').value,estado:document.getElementById('pago-estado').value};
+  if(pagoEditing) D.pagos=D.pagos.map(x=>x.id===pagoEditing?p:x); else D.pagos.push(p);
+  save();renderFinanzas();closeModal('modal-pago');
+}
+function delPago(){if(!confirm('¿Eliminar?'))return;D.pagos=D.pagos.filter(p=>p.id!==pagoEditing);save();renderFinanzas();closeModal('modal-pago');}
+
+// ── CALENDARIO ────────────────────────────────────────────────────────────────
+function renderCal(){
+  const g=gf.cal;
+  document.getElementById('cal-grid').innerHTML=MESES.map((mes,mi)=>{
+    const first=new Date(2025,mi,1).getDay();
+    const offset=first===0?6:first-1;
+    const total=new Date(2025,mi+1,0).getDate();
+    let days=DIAS_S.map(d=>`<div class="day-label">${d}</div>`).join('');
+    for(let i=0;i<offset;i++) days+='<div></div>';
+    for(let day=1;day<=total;day++){
+      const ds=`2025-${String(mi+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      const evs=[...D.pagos.filter(p=>p.fecha===ds&&(g==='todas'||p.gestion===g)),...D.eventos.filter(e=>e.fecha===ds),...D.incidencias.filter(i=>i.fecha===ds&&(g==='todas'||i.gestion===g))];
+      const hasPago=evs.some(e=>e.importe!==undefined);
+      const hasEv=evs.some(e=>['visita','firma','admin','incidencia'].includes(e.tipo));
+      const hasInc=evs.some(e=>e.prioridad!==undefined);
+      let cls='day-cell';
+      if(hasPago) cls=' day-cell has-pago';
+      if(hasEv) cls=' day-cell has-ev';
+      if(hasInc) cls=' day-cell has-inc';
+      days+=`<div class="${cls}"${evs.length?` onclick="openCalDetail('${ds}')"`:''}}>${day}</div>`;
+    }
+    return `<div class="month-block"><div class="month-name">${mes}</div><div class="day-grid">${days}</div></div>`;
+  }).join('');
+}
+function openCalDetail(ds){
+  const g=gf.cal;
+  const evs=[...D.pagos.filter(p=>p.fecha===ds&&(g==='todas'||p.gestion===g)),...D.eventos.filter(e=>e.fecha===ds),...D.incidencias.filter(i=>i.fecha===ds&&(g==='todas'||i.gestion===g))];
+  document.getElementById('cal-detail-title').textContent='Eventos · '+ds;
+  document.getElementById('cal-detail-body').innerHTML=evs.map((e,i)=>`
+    <div style="padding:10px 0;border-bottom:${i<evs.length-1?'1px solid #f0f0f0':'none'}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div style="font-size:13px;font-weight:700;color:#111">${e.titulo||e.concepto}</div>
+        ${e.gestion?gbadge(e.gestion):''}
+      </div>
+      ${e.vivienda?`<div style="font-size:12px;color:#888;margin-top:2px">${e.vivienda}</div>`:''}
+      ${e.importe!==undefined?`<div style="font-size:13px;font-weight:700;color:${e.tipo==='ingreso'?'#16a34a':'#dc2626'};margin-top:2px">${e.tipo==='ingreso'?'+':'-'}${fmt(e.importe)} €</div>`:''}
+      ${e.descripcion?`<div style="font-size:12px;color:#666;margin-top:4px">${e.descripcion}</div>`:''}
+      ${e.hora?`<div style="font-size:11px;color:#aaa;margin-top:2px">${e.hora}${e.alerta?' 🔔 Alerta activa':''}</div>`:''}
+    </div>`).join('');
+  document.getElementById('modal-cal-detail').classList.add('open');
+}
+
+// ── INCIDENCIAS ───────────────────────────────────────────────────────────────
+function setIncFiltro(val,btn){
+  incFiltro=val;
+  document.querySelectorAll('#inc-filtros .gfbtn').forEach(b=>b.className='gfbtn');
+  if(btn) btn.className='gfbtn act-t';
+  renderInc();
+}
+function renderInc(){
+  const g=gf.inc;
+  const incs=D.incidencias.filter(i=>(incFiltro==='todas'||i.estado===incFiltro)&&(g==='todas'||i.gestion===g));
+  document.getElementById('inc-list').innerHTML=incs.length===0?'<div style="text-align:center;padding:40px;color:#ccc;font-size:13px">Sin incidencias.</div>':
+    incs.map(inc=>{
+      const est=ESTADO_INC[inc.estado]||{label:inc.estado,bg:'#f3f4f6',color:'#374151'};
+      return `<div class="inc-card" onclick="openInc('${inc.id}')">
+        <div class="inc-bar" style="background:${PRIO_COLOR[inc.prioridad]||'#888'}"></div>
+        <div class="inc-body">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:3px;flex-wrap:wrap;gap:4px">
+            <div style="font-size:13px;font-weight:700;color:#111">${inc.titulo}</div>
+            <div style="display:flex;gap:5px;align-items:center">${gbadge(inc.gestion||'directa')}<span class="cat-badge" style="background:${est.bg};color:${est.color}">${est.label}</span></div>
+          </div>
+          <div style="font-size:12px;color:#2563eb;margin-bottom:3px">${inc.vivienda}</div>
+          <div style="font-size:12px;color:#666;line-height:1.4">${inc.descripcion}</div>
+          <div style="display:flex;gap:10px;margin-top:5px;flex-wrap:wrap">
+            <span style="font-size:11px;color:#aaa">${inc.fecha}</span>
+            <span style="font-size:11px;font-weight:700;color:${PRIO_COLOR[inc.prioridad]}">Prioridad: ${inc.prioridad}</span>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+}
+function openInc(id){
+  incEditing=id;
+  const inc=id?D.incidencias.find(x=>x.id===id):null;
+  document.getElementById('inc-title').textContent=id?'Editar incidencia':'Nueva incidencia';
+  document.getElementById('btn-del-inc').style.display=id?'inline-block':'none';
+  incGest=inc?.gestion||'directa'; incPrio=inc?.prioridad||'media';
+  document.getElementById('inc-titulo').value=inc?.titulo||'';
+  document.getElementById('inc-viv').value=inc?.vivienda||'';
+  document.getElementById('inc-tipo').value=inc?.tipo||'averia';
+  document.getElementById('inc-estado').value=inc?.estado||'abierta';
+  document.getElementById('inc-desc').value=inc?.descripcion||'';
+  document.getElementById('inc-fecha').value=inc?.fecha||TODAY;
+  renderIncSels();
+  document.getElementById('modal-inc').classList.add('open');
+}
+function renderIncSels(){
+  document.querySelectorAll('#inc-gest-sel .type-opt').forEach(el=>{
+    const g=el.dataset.g,c=g==='directa'?'#16a34a':'#7c3aed',bg=g==='directa'?'#dcfce7':'#f5f3ff';
+    el.style.borderColor=incGest===g?c:'#e5e5e5';el.style.background=incGest===g?bg:'#fff';el.style.color=incGest===g?c:'#bbb';
+  });
+  document.querySelectorAll('#inc-prio-sel .type-opt').forEach(el=>{
+    const p=el.dataset.p,c=PRIO_COLOR[p];
+    el.style.borderColor=incPrio===p?c:'#e5e5e5';el.style.background=incPrio===p?'#fff5f5':'#fff';el.style.color=incPrio===p?c:'#bbb';
+  });
+}
+function selIncGest(el){incGest=el.dataset.g;renderIncSels();}
+function selIncPrio(el){incPrio=el.dataset.p;renderIncSels();}
+function saveInc(){
+  const t=document.getElementById('inc-titulo').value.trim();
+  if(!t){alert('El título es obligatorio.');return;}
+  const inc={id:incEditing||uid(),titulo:t,vivienda:document.getElementById('inc-viv').value,
+    gestion:incGest,prioridad:incPrio,estado:document.getElementById('inc-estado').value,
+    descripcion:document.getElementById('inc-desc').value,tipo:document.getElementById('inc-tipo').value,
+    fecha:document.getElementById('inc-fecha').value};
+  if(incEditing) D.incidencias=D.incidencias.map(x=>x.id===incEditing?inc:x); else D.incidencias.push(inc);
+  save();renderInc();closeModal('modal-inc');
+}
+function delInc(){if(!confirm('¿Eliminar?'))return;D.incidencias=D.incidencias.filter(i=>i.id!==incEditing);save();renderInc();closeModal('modal-inc');}
+
+// ── PLANNER ───────────────────────────────────────────────────────────────────
+const HORAS=['08:00','09:00','10:00','11:00','12:00','13:00','16:00','17:00','18:00','19:00'];
+const BASE_DATE=new Date(2025,5,30);
+function cambiarSemana(dir){semana+=dir;renderPlanner();}
+function renderPlanner(){
+  const dias=Array(7).fill(null).map((_,i)=>{const d=new Date(BASE_DATE);d.setDate(BASE_DATE.getDate()+semana*7+i);return d;});
+  const toISO=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  const fmtD=d=>`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`;
+  document.getElementById('planner-label').textContent=`${fmtD(dias[0])} – ${fmtD(dias[6])}`;
+  let html=`<div style="background:#f8f8f8"></div>${dias.map((d,i)=>`<div class="planner-head"><div style="font-size:10px;color:#aaa;font-weight:700">${DIAS_L[i]}</div><div style="font-size:13px;font-weight:700;color:${toISO(d)===TODAY?'#2563eb':'#333'}">${d.getDate()}</div></div>`).join('')}`;
+  HORAS.forEach(hora=>{
+    html+=`<div class="planner-time">${hora}</div>`;
+    dias.forEach(d=>{
+      const ds=toISO(d);
+      const evs=D.eventos.filter(e=>e.fecha===ds&&e.hora===hora);
+      html+=`<div class="planner-cell" style="background:${ds===TODAY?'#fafeff':''}" onclick="openEv(null,'${ds}','${hora}')">
+        ${evs.map(ev=>{const st=EV_STYLE[ev.tipo]||EV_STYLE.admin;return `<span class="planner-ev" style="background:${st.bg};border-left:3px solid ${st.border};color:${st.color}" onclick="event.stopPropagation();openEv('${ev.id}',null,null)">${ev.titulo}${ev.alerta?' 🔔':''}</span>`;}).join('')}
+      </div>`;
+    });
+  });
+  document.getElementById('planner-grid').innerHTML=html;
+  const notifOk='Notification' in window&&Notification.permission==='granted';
+  document.getElementById('notif-btn').style.display=notifOk?'none':'inline-block';
+  document.getElementById('notif-ok').style.display=notifOk?'inline-block':'none';
+}
+function openEv(id,fecha,hora){
+  evEditing=id;
+  const ev=id?D.eventos.find(x=>x.id===id):null;
+  document.getElementById('ev-title').textContent=id?'Editar evento':'Nuevo evento';
+  document.getElementById('btn-del-ev').style.display=id?'inline-block':'none';
+  evTipo=ev?.tipo||'visita';
+  document.getElementById('ev-titulo').value=ev?.titulo||'';
+  populateEvVivSelect();
+  // Set vivienda: match to select option or fallback to free text
+  const vivVal = ev?.vivienda||'';
+  const sel = document.getElementById('ev-viv-sel');
+  const input = document.getElementById('ev-viv');
+  let matched = false;
+  for(let i=0;i<sel.options.length;i++){
+    if(sel.options[i].value === vivVal && vivVal !== '' && vivVal !== '__otro__'){
+      sel.value = vivVal; input.style.display='none'; input.value=vivVal; matched=true; break;
+    }
+  }
+  if(!matched && vivVal==='General'){ sel.value='__general__'; input.style.display='none'; input.value='General'; }
+  else if(!matched && vivVal){ sel.value='__otro__'; input.style.display='block'; input.value=vivVal; }
+  else if(!matched){ sel.value=''; input.style.display='none'; input.value=''; }
+  document.getElementById('ev-fecha').value=ev?.fecha||fecha||TODAY;
+  document.getElementById('ev-hora').value=ev?.hora||hora||'09:00';
+  document.getElementById('ev-alerta').checked=ev?!!ev.alerta:true;
+  document.getElementById('ev-notas').value=ev?.notas||'';
+  renderEvSels(); updateAlertaWarn();
+  document.getElementById('modal-ev').classList.add('open');
+}
+function populateEvVivSelect(){
+  const sel = document.getElementById('ev-viv-sel');
+  // Keep first 3 options (blank, otro, general), remove rest
+  while(sel.options.length > 3) sel.remove(3);
+  // Add active viviendas
+  const activas = D.viviendas.filter(v=>!v.archivada);
+  if(activas.length > 0){
+    const grp = document.createElement('optgroup');
+    grp.label = 'Viviendas activas';
+    activas.forEach(v=>{
+      const opt = document.createElement('option');
+      opt.value = v.direccion;
+      opt.textContent = (v.inmueble?v.inmueble+' · ':'')+v.direccion+(v.propietario?' ('+v.propietario+')':'');
+      grp.appendChild(opt);
+    });
+    sel.appendChild(grp);
+  }
+}
+
+function onEvVivSel(sel){
+  const input = document.getElementById('ev-viv');
+  if(sel.value === '__otro__'){
+    input.style.display = 'block';
+    input.value = '';
+    input.focus();
+  } else if(sel.value === '__general__'){
+    input.style.display = 'none';
+    input.value = 'General';
+  } else if(sel.value === ''){
+    input.style.display = 'none';
+    input.value = '';
+  } else {
+    input.style.display = 'none';
+    input.value = sel.value;
+  }
+}
+
+function renderEvSels(){
+  document.querySelectorAll('#ev-tipo-sel .type-opt').forEach(el=>{
+    const t=el.dataset.et,st=EV_STYLE[t];
+    el.style.borderColor=evTipo===t?st.border:'#e5e5e5';el.style.background=evTipo===t?st.bg:'#fff';el.style.color=evTipo===t?st.color:'#bbb';
+  });
+}
+function selEvTipo(el){evTipo=el.dataset.et;renderEvSels();}
+function updateAlertaWarn(){
+  const ok='Notification' in window&&Notification.permission==='granted';
+  document.getElementById('ev-alerta-warn').style.display=(!ok&&document.getElementById('ev-alerta').checked)?'block':'none';
+}
+document.getElementById('ev-alerta').addEventListener('change',updateAlertaWarn);
+function saveEv(){
+  const t=document.getElementById('ev-titulo').value.trim();
+  if(!t){alert('El título es obligatorio.');return;}
+  const alerta=document.getElementById('ev-alerta').checked;
+  const ev={id:evEditing||uid(),titulo:t,tipo:evTipo,vivienda:document.getElementById('ev-viv').value||document.getElementById('ev-viv-sel').value.replace('__otro__','').replace('__general__','General')||'',
+    fecha:document.getElementById('ev-fecha').value,hora:document.getElementById('ev-hora').value,
+    alerta,notas:document.getElementById('ev-notas').value};
+  if(evEditing) D.eventos=D.eventos.map(x=>x.id===evEditing?ev:x); else D.eventos.push(ev);
+  if(alerta&&'Notification' in window&&Notification.permission==='granted') scheduleNotif(ev);
+  save();renderPlanner();closeModal('modal-ev');
+}
+function delEv(){if(!confirm('¿Eliminar?'))return;D.eventos=D.eventos.filter(e=>e.id!==evEditing);save();renderPlanner();closeModal('modal-ev');}
+function activarAlertas(){
+  if('Notification' in window) Notification.requestPermission().then(()=>renderPlanner());
+  else alert('Tu navegador no soporta notificaciones.');
+}
+function scheduleNotif(ev){
+  if(!('Notification' in window)||Notification.permission!=='granted') return;
+  try{
+    const [y,m,d]=ev.fecha.split('-').map(Number);
+    const [h,min]=ev.hora.split(':').map(Number);
+    const delay=new Date(y,m-1,d,h,min,0).getTime()-30*60*1000-Date.now();
+    if(delay>0&&delay<86400000) setTimeout(()=>new Notification('Recordatorio: '+ev.titulo,{body:'En 30 min · '+(ev.vivienda||'')+' · '+ev.hora}),delay);
+  }catch(e){}
+}
+
+// ── Cerrar modal al clic fondo ────────────────────────────────────────────────
+document.querySelectorAll('.modal-bg').forEach(m=>{
+  m.addEventListener('click',e=>{if(e.target===m) m.classList.remove('open');});
+});
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+// Init: try Google Sheets first, fallback to localStorage
+(async function(){
+  let cloudData = await gsGet();
+  if(cloudData){
+    D = cloudData;
+    if(!D.estados) D.estados = defaultEstados;
+    localStorage.setItem(SK, JSON.stringify(D));
+  }
+  D.eventos.filter(e=>e.alerta).forEach(scheduleNotif);
+  renderDash(); renderKanban(); renderCal(); renderInc(); renderPlanner();
+})();
+</script>
+</body>
+</html>
