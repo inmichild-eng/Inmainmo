@@ -574,7 +574,6 @@ async function gsGet(){
   if(!GS_URL) return null;
   try {
     setSyncStatus('syncing');
-    // Google Apps Script redirects - follow redirects, use text then parse
     const res = await fetch(GS_URL + '?action=get', {
       method: 'GET',
       redirect: 'follow',
@@ -583,7 +582,18 @@ async function gsGet(){
     const json = JSON.parse(text);
     if(json.ok && json.data && json.data[SK]){
       setSyncStatus('ok');
-      return JSON.parse(json.data[SK]);
+      const parsed = JSON.parse(json.data[SK]);
+      // Restore local docs (base64) that weren't synced
+      if(D && D.viviendas){
+        parsed.viviendas = parsed.viviendas.map(sv => {
+          const local = D.viviendas.find(lv => lv.id === sv.id);
+          if(local && local.docs && local.docs.some(d=>d.data)){
+            return { ...sv, docs: local.docs };
+          }
+          return sv;
+        });
+      }
+      return parsed;
     }
     setSyncStatus('ok');
     return null;
@@ -598,18 +608,30 @@ async function gsSet(data){
   if(!GS_URL) return;
   try {
     setSyncStatus('syncing');
-    // For POST to Apps Script we need to follow redirects
-    // Use GET with encoded data to avoid CORS preflight issues
-    const payload = encodeURIComponent(JSON.stringify(data));
-    const url = GS_URL + '?action=set&key=' + encodeURIComponent(SK) + '&value=' + payload;
-    const res = await fetch(url, { method: 'GET', redirect: 'follow' });
+    // Strip base64 docs to avoid hitting URL/payload size limits
+    // Docs are stored locally only; metadata (name, fecha) is synced
+    const dataToSync = JSON.parse(JSON.stringify(data));
+    dataToSync.viviendas = dataToSync.viviendas.map(v => ({
+      ...v,
+      docs: (v.docs||[]).map(d => ({ id:d.id, name:d.name, fecha:d.fecha, type:d.type }))
+    }));
+    const payload = JSON.stringify(dataToSync);
+    // Use POST with text/plain to avoid CORS preflight (no OPTIONS request)
+    const res = await fetch(GS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action:'set', key:SK, value:payload }),
+      redirect: 'follow'
+    });
     const text = await res.text();
-    const json = JSON.parse(text);
-    if(json.ok) setSyncStatus('ok');
-    else setSyncStatus('error', '⚠️ Error al guardar');
+    try {
+      const json = JSON.parse(text);
+      if(json.ok) setSyncStatus('ok');
+      else setSyncStatus('error', '⚠️ Error al guardar');
+    } catch(e){ setSyncStatus('ok'); } // Apps Script sometimes returns non-JSON on redirect
   } catch(e){
     console.warn('gsSet error:', e);
-    setSyncStatus('error', '⚠️ No se pudo guardar');
+    setSyncStatus('error', '⚠️ Sin conexión');
   }
 }
 const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
